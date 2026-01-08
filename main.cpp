@@ -38,7 +38,6 @@ int main(int ac, char **av) {
         //         std::cout << *j << ' ';
         // for (std::vector<std::string>::iterator j = server.configfile.cgi_ext.begin(); j != server.configfile.cgi_ext.end(); j++)
         //         std::cout << *j << ' ';
-
         server.run();
     }
     catch (const std::exception &e){

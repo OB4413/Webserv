@@ -71,12 +71,12 @@ class Request {
 
 
 // ###################################
-// class of Respond                  #
+// class of Response                  #
 // ###################################
 
-class Respond {
+class Response {
     public:
-        std::string respond;
+        std::string Response;
 };
 
 // ###################################
@@ -92,7 +92,7 @@ class Server {
     public:
         ConfigFile configfile;
         Request request;
-        Respond respond;
+        Response response;
 
         void    run();
 };

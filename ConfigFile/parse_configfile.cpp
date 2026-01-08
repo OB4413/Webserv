@@ -16,6 +16,7 @@ void ConfigFile::init_the_header_conf_default(){
 
 void   parse_location(std::vector<std::string> &tokens, std::vector<std::string>::iterator &i, ConfigFile &conf){
     location location_to_push;
+    location_to_push.autoindex = false;
     i++;
     location_to_push.path = *i;
     i++;
@@ -27,6 +28,8 @@ void   parse_location(std::vector<std::string> &tokens, std::vector<std::string>
         if (!i->compare("allow_methods"))
         {
             i++;
+            if (!i->compare(";"))
+                throw std::runtime_error("error syntax (config file allow_methods)");
             while (i != tokens.end() && i->compare(";"))
             {
                 if (i->compare("delete") && i->compare("post") && i->compare("get"))
@@ -93,6 +96,8 @@ void   check_errors_and_init_config_server(std::vector<std::string> &tokens, Con
                 i++;
             else if (!i->compare("listen"))
             {
+                if (index == 0)
+                    conf.listen.clear();
                 i++;
                 for (size_t j = 0; j < i->size(); j++)
                 {
@@ -104,7 +109,7 @@ void   check_errors_and_init_config_server(std::vector<std::string> &tokens, Con
                     throw std::runtime_error("error syntax (config file listen)");
                 if (index == 0)
                 {
-                    conf.listen[index] = n;
+                    conf.listen.push_back(n);
                     index++;
                 }
                 else
