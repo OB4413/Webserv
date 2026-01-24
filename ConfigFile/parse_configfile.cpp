@@ -2,15 +2,16 @@
 
 void ConfigFile::init_the_header_conf_default(){
     this->listen.push_back(8080);
-    this->server_name = "wedserv/1.0";
+    this->server_name = "webserv/1.0";
     this->host = "127.0.0.1";
-    this->root = "pages";
+    this->root = "www";
     this->client_max_body_size = 1024;
     this->index = "index.html";
-    this->error_page[403] = "errors/403.html";
-    this->error_page[404] = "errors/404.html";
-    this->error_page[405] = "errors/405.html";
-    this->error_page[500] = "errors/500.html";
+    this->error_page[403] = "/Errors/403.html";
+    this->error_page[404] = "/Errors/404.html";
+    this->error_page[405] = "/Errors/405.html";
+    this->error_page[413] = "/Errors/413.html";
+    this->error_page[500] = "/Errors/500.html";
 }
 
 
@@ -29,10 +30,10 @@ void   parse_location(std::vector<std::string> &tokens, std::vector<std::string>
         {
             i++;
             if (!i->compare(";"))
-                throw std::runtime_error("error syntax (config file allow_methods)");
+                    throw std::runtime_error("error syntax (config file allow_methods)");
             while (i != tokens.end() && i->compare(";"))
             {
-                if (i->compare("delete") && i->compare("post") && i->compare("get"))
+                if (i->compare("DELETE") && i->compare("POST") && i->compare("GET"))
                     throw std::runtime_error("error syntax (config file allow_methods)");
                 location_to_push.allow_methods.push_back(*i);
                 i++;
@@ -56,12 +57,12 @@ void   parse_location(std::vector<std::string> &tokens, std::vector<std::string>
         else if (!i->compare("root") || !i->compare("return") || !i->compare("index"))
         {
             i++;
-            if (!(i - 1)->compare("root"))
-                location_to_push.root = *i;
-            else if (!(i - 1)->compare("return"))
-                location_to_push.return_to = *i;
-            else if (!(i - 1)->compare("index"))
-                location_to_push.index = *i;
+			if (!(i - 1)->compare("root"))
+            	location_to_push.root = *i;
+			else if (!(i - 1)->compare("return"))
+            	location_to_push.return_to = *i;
+			else if (!(i - 1)->compare("index"))
+            	location_to_push.index = *i;
             i++;
             if (i->compare(";"))
                 throw std::runtime_error("error syntax (config file [root] [return] [index])");
@@ -72,7 +73,7 @@ void   parse_location(std::vector<std::string> &tokens, std::vector<std::string>
             throw std::runtime_error("error syntax (config file)");
         i++;
     }
-    conf.locations.push_back(location_to_push);
+	conf.locations.push_back(location_to_push);
 }
 
 
@@ -96,8 +97,8 @@ void   check_errors_and_init_config_server(std::vector<std::string> &tokens, Con
                 i++;
             else if (!i->compare("listen"))
             {
-                if (index == 0)
-                    conf.listen.clear();
+				if (index == 0)
+					conf.listen.clear();
                 i++;
                 for (size_t j = 0; j < i->size(); j++)
                 {
@@ -121,12 +122,12 @@ void   check_errors_and_init_config_server(std::vector<std::string> &tokens, Con
             else if (!i->compare("server_name") || !i->compare("root") || !i->compare("index"))
             {
                 i++;
-                if (!(i - 1)->compare("server_name"))
-                    conf.server_name = *i;
-                if (!(i - 1)->compare("root"))
-                    conf.root = *i;
-                if (!(i - 1)->compare("index"))
-                    conf.index = *i;
+				if (!(i - 1)->compare("server_name"))
+                	conf.server_name = *i;
+				else if (!(i - 1)->compare("root"))
+                	conf.root = *i;
+				else if (!(i - 1)->compare("index"))
+                	conf.index = *i;
                 i++;
                 if (i->compare(";"))
                     throw std::runtime_error("error syntax (config file [server_name] [root] [index])");
@@ -171,27 +172,17 @@ void   check_errors_and_init_config_server(std::vector<std::string> &tokens, Con
             }
             else if (!i->compare("location"))
                 parse_location(tokens, i, conf);
-            else if (!i->compare("cgi_path"))
+            else if (!i->compare("cgi_conf"))
             {
                 i++;
-                while (i != tokens.end() && i->compare(";"))
-                {
-                    conf.cgi_path.push_back(*i);
-                    i++;
-                }
-                if (i == tokens.end())
-                    throw std::runtime_error("error syntax (config file cgi_path)");
-            }
-            else if (!i->compare("cgi_ext"))
-            {
+                std::pair<std::string, std::string> cgi_to_push;
+                cgi_to_push.first = *i;
                 i++;
-                while (i != tokens.end() && i->compare(";"))
-                {
-                    conf.cgi_ext.push_back(*i);
-                    i++;
-                }
-                if (i == tokens.end())
-                    throw std::runtime_error("error syntax (config file cgi_ext)");
+                cgi_to_push.second = *i;
+                conf.cgi_conf.push_back(cgi_to_push);
+                i++;
+                if (i->compare(";"))
+                    throw std::runtime_error("error syntax (config file cgi_conf)");
             }
             else
                 throw std::runtime_error("error syntax (config file)");
@@ -221,11 +212,6 @@ void    ConfigFile::parse_config_file(char *av)
             line.erase(pos, line.length());
         file.append(line);
         line.clear();
-    }
-    for (size_t i = 0; i < file.size(); i++)
-    {
-        if (file[i] >= 65 && file[i] <= 90)
-            throw std::runtime_error("we work with lower case only (config file)");
     }
     size_t end = 0;
     size_t start;

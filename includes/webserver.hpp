@@ -21,6 +21,9 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <sys/epoll.h>
+#include <cstdlib>
+#include <ctime>
+#include <iostream>
 
 
 // ###################################
@@ -48,8 +51,7 @@ class ConfigFile {
     std::string index;
     std::map<int, std::string> error_page;
     std::vector<location> locations;
-    std::vector<std::string> cgi_path;
-    std::vector<std::string> cgi_ext;
+    std::vector<std::pair<std::string, std::string> > cgi_conf;
 
     void  init_the_header_conf_default();
     void  parse_config_file(char *av);
@@ -65,7 +67,21 @@ class ConfigFile {
 
 class Request {
     public:
-        std::string path;
+        std::string request_str;
+        long long byte_I_read;
+        long long size_header;
+        size_t pos;
+
+        //data of request
+        std::string method;
+        std::string Path; // it is relative_path in delete
+        long long content_lenght;
+        std::string Content_Type;
+        std::string header;
+        std::string body;
+        std::string boundary;
+        std::map<std::string, std::string> data_kyvl;
+        std::string filename;
 };
 
 // ###################################
@@ -73,16 +89,19 @@ class Request {
 
 
 // ###################################
-// class of Response                  #
+// class of Response                 #
 // ###################################
 
 class Response {
     public:
-        std::string Response;
+        bool header_send;
+        bool set_respomse;
+        int exit_status;
+        std::string message_status;
+        int fd_body_response;
 };
 
 // ###################################
-
 
 
 
@@ -93,10 +112,14 @@ class Response {
 class Server {
     public:
         ConfigFile configfile;
-        Request request;
-        Response response;
+        std::map<int, Request> clients_requests;
+        std::map<int, Response> clients_responses;
 
         void    run();
+        void    init_the_main_sockets_listing_end_epoll(std::vector<int> &sockets_fds, int &epoll_fd, epoll_event &evens_epoll);
+        void    accept_connection(epoll_event *max_events, int i, epoll_event &evens_epoll, int epoll_fd);
+        void    parse_request(std::map<int, Request>::iterator &it);
+        void    set_response(std::map<int, Request>::iterator &it_req, std::map<int, Response>::iterator &it_resp);
 };
 
 // ###################################
