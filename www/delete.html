@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <title>Delete File</title>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center text-white">
+
+  <div class="w-full max-w-md bg-slate-900/80 border border-slate-700 rounded-2xl p-8 shadow-2xl">
+    <h1 class="text-2xl font-extrabold text-center mb-2">Delete File</h1>
+    <p class="text-sm text-slate-400 text-center mb-6">
+      Enter the exact path of the file you want to permanently delete.
+    </p>
+
+    <div class="mb-4">
+      <label class="text-sm font-semibold">File path</label>
+      <input
+        id="delete"
+        type="text"
+        placeholder="/uploads/example.png"
+        class="w-full mt-2 px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 outline-none focus:border-red-500"
+      />
+    </div>
+
+    <button
+      onclick="DELETE_METHOD()"
+      class="w-full bg-red-500 hover:bg-red-600 transition rounded-lg py-2 font-bold"
+    >
+      Delete file
+    </button>
+
+    <div class="mt-5 text-center">
+      <p id="response-status" class="text-sm text-slate-300">Waiting for action…</p>
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById('delete');
+    const responseStatus = document.getElementById('response-status');
+
+    const DELETE_METHOD = async () => {
+      const URI = input.value.trim();
+
+      if (!URI) {
+        responseStatus.textContent = 'Please enter a file path';
+        return;
+      }
+
+      responseStatus.textContent = 'Deleting…';
+
+      try {
+        const response = await fetch(URI, { method: 'DELETE' });
+
+        if (response.ok) {
+          responseStatus.textContent = 'File deleted successfully ✅';
+        } else if (response.status === 404) {
+          responseStatus.textContent = 'File not found ❌';
+        } else if (response.status === 403) {
+          responseStatus.textContent = 'Permission denied 🚫';
+        } else {
+          responseStatus.textContent = 'Delete failed ⚠️';
+        }
+      } catch (err) {
+        responseStatus.textContent = 'Server error ⚠️';
+      }
+    };
+  </script>
+</body>
+</html>

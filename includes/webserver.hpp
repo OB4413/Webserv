@@ -24,6 +24,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <dirent.h>
+#include <sys/stat.h>
 
 
 // ###################################
@@ -53,7 +55,6 @@ class ConfigFile {
     std::vector<location> locations;
     std::vector<std::pair<std::string, std::string> > cgi_conf;
 
-    void  init_the_header_conf_default();
     void  parse_config_file(char *av);
 };
 
@@ -99,6 +100,9 @@ class Response {
         int exit_status;
         std::string message_status;
         int fd_body_response;
+        std::string return_to;
+        std::string req_autoindex;
+        std::string content_type;
 };
 
 // ###################################
@@ -120,6 +124,7 @@ class Server {
         void    accept_connection(epoll_event *max_events, int i, epoll_event &evens_epoll, int epoll_fd);
         void    parse_request(std::map<int, Request>::iterator &it);
         void    set_response(std::map<int, Request>::iterator &it_req, std::map<int, Response>::iterator &it_resp);
+        void    recv_request(epoll_event& max_events, int &i, int &epoll_fd, epoll_event &evens_epoll);
 };
 
 // ###################################

@@ -1,20 +1,5 @@
 #include "../includes/webserver.hpp"
 
-void ConfigFile::init_the_header_conf_default(){
-    this->listen.push_back(8080);
-    this->server_name = "webserv/1.0";
-    this->host = "127.0.0.1";
-    this->root = "www";
-    this->client_max_body_size = 1024;
-    this->index = "index.html";
-    this->error_page[403] = "/Errors/403.html";
-    this->error_page[404] = "/Errors/404.html";
-    this->error_page[405] = "/Errors/405.html";
-    this->error_page[413] = "/Errors/413.html";
-    this->error_page[500] = "/Errors/500.html";
-}
-
-
 void   parse_location(std::vector<std::string> &tokens, std::vector<std::string>::iterator &i, ConfigFile &conf){
     location location_to_push;
     location_to_push.autoindex = false;

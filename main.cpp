@@ -3,7 +3,8 @@
 int main(int ac, char **av) {
     Server server;
     try{
-        server.configfile.init_the_header_conf_default();
+        char defalt_conf[23] = "Server_run/defalt.conf";
+        server.configfile.parse_config_file(defalt_conf);
         if (ac > 2)
             throw std::runtime_error("./program [config file]");
         else if (ac == 2)

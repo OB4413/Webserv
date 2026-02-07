@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>405 — Method Not Allowed</title>
+  <style>
+    :root {
+      --bg: #0f1220;
+      --card: #171a2e;
+      --text: #e6e7ee;
+      --muted: #9aa0b4;
+      --accent: #ff7a7a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: linear-gradient(135deg, #0f1220, #121633);
+      color: var(--text);
+      padding: 20px;
+    }
+
+    .card {
+      max-width: 520px;
+      width: 100%;
+      background: var(--card);
+      padding: 32px;
+      border-radius: 18px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.45);
+      text-align: center;
+    }
+
+    .code {
+      font-size: 72px;
+      font-weight: 800;
+      letter-spacing: -2px;
+      margin: 0;
+      color: var(--accent);
+    }
+
+    h1 {
+      margin: 6px 0 14px;
+      font-size: 22px;
+    }
+
+    p {
+      margin: 0 0 24px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    a {
+      text-decoration: none;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      transition: transform .15s ease, opacity .15s ease;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #0b1020;
+    }
+
+    .secondary {
+      border: 1px solid rgba(255,255,255,0.15);
+      color: var(--text);
+    }
+
+    a:hover {
+      transform: translateY(-1px);
+      opacity: .9;
+    }
+
+    footer {
+      margin-top: 22px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h2 class="code">405</h2>
+    <h1>Method Not Allowed</h1>
+    <p>
+      The HTTP method used for this request is not allowed on this endpoint.
+      Please check the request type (GET, POST, PUT, DELETE) and try again.
+    </p>
+
+    <div class="actions">
+      <a href="/" class="primary">Go Home</a>
+      <a href="javascript:history.back()" class="secondary">Go Back</a>
+    </div>
+
+    <footer>
+      Error 405 — Method Not Allowed
+    </footer>
+  </main>
+</body>
+</html>
